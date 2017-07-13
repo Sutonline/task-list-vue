@@ -6,6 +6,7 @@
       </el-col>
       <el-col :span="6" style="text-align: right;margin-right: 20px">
         <el-button type="" size="normal" @click="dialogVisible = true">新增任务</el-button>
+        <el-button type="" size="normal" @click="getNonFinishedTask">获取未完成的任务</el-button>
       </el-col>
     </el-row>
     <el-table
@@ -15,6 +16,10 @@
         prop="date"
         label="CreateDate"
         width="118">
+      </el-table-column>
+      <el-table-column
+        prop="label"
+        label="Category">
       </el-table-column>
       <el-table-column
         prop="content"
@@ -38,7 +43,7 @@
                :before-close="handleClose">
       <el-form ref="newTask" :model="form" label-width="80px">
         <el-form-item label="任务类别">
-          <el-select v-model="form.region" placeholder="请选择区域">
+          <el-select v-model="form.region" placeholder="请选择">
             <el-option label="区域二" value="shanghai"></el-option>
             <el-option label="区域一" value="beijing"></el-option>
           </el-select>
@@ -56,6 +61,8 @@
 </template>
 
 <script>
+  import * as api from '../api/task-list-api'
+
   export default {
     name: 'currentTasks',
     data () {
@@ -91,6 +98,9 @@
       finish: function (scope) {
         console.log(scope)
       },
+      loadData: function () {
+
+      },
       // 每行className设置
       setRowClassName (row, index) {
         return 'table-item'
@@ -100,6 +110,13 @@
           .then(_ => {
             done()
           }).catch(_ => {})
+      },
+      getNonFinishedTask: function () {
+        this.$http.get(api.GET_NON_FINISH_TASK).then(
+          res => {
+            console.log(res)
+          }
+        )
       }
     }
   }
