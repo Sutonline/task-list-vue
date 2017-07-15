@@ -41,20 +41,23 @@
                :visible.sync="dialogVisible"
                size="tiny"
                :before-close="handleClose">
-      <el-form ref="newTask" :model="form" label-width="80px">
-        <el-form-item label="任务类别">
-          <el-select v-model="form.region" placeholder="请选择">
-            <el-option label="区域二" value="shanghai"></el-option>
-            <el-option label="区域一" value="beijing"></el-option>
+      <el-form ref="newTask" :model="form" :rules="ruleValidate" label-width="80px">
+        <el-form-item label="任务类别" prop="label">
+          <el-select v-model="form.label" placeholder="请选择">
+            <el-option v-for="item in labels"
+                       :key="item.name"
+                       :label="item.value"
+                       :value="item.name">
+            </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="任务内容">
+        <el-form-item label="任务内容" prop="content">
           <el-input type="textarea" :rows="2" placeholder="请输入内容" v-model="form.content"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="dialogVisible = false">确定</el-button>
+        <el-button type="primary" @click="addNewTask('newTask')">确定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -68,9 +71,18 @@
     data () {
       return {
         form: {
-          region: '',
+          label: '',
           content: ''
         },
+        ruleValidate: {
+          label: [{
+            required: true,
+            message: '请选择标签'
+          }],
+          content: [{
+            required: true,
+            message: '任务内容必填'}]},
+        labels: [],
         dialogVisible: false,
         tableData: [
           {
@@ -91,6 +103,12 @@
         ]
       }
     },
+    route: {
+      data: function (transition) {
+        // var q = this.$route.query // 获取url的路由查询对象
+        this.loadData()
+      }
+    },
     methods: {
       delete: function (scope) {
         console.log(scope)
@@ -99,7 +117,8 @@
         console.log(scope)
       },
       loadData: function () {
-
+        this.getAllLabel()
+        this.getNonFinishedTask()
       },
       // 每行className设置
       setRowClassName (row, index) {
@@ -109,7 +128,7 @@
         this.$confirm('确认关闭?')
           .then(_ => {
             done()
-          }).catch(_ => {})
+          }).catch()
       },
       getNonFinishedTask: function () {
         this.$http.get(api.GET_NON_FINISH_TASK).then(
@@ -117,6 +136,54 @@
             console.log(res)
           }
         )
+        this.getAllLabel()
+      },
+      getAllLabel: function () {
+        this.$http.get(api.QUERY_LABELS).then(
+          res => {
+            this.labels = res.data
+          }
+        )
+      },
+      doneTask: function (taskId) {
+        this.$http.post(api.DONE + '/?id=' + taskId).then(
+          res => {
+            console.log(res)
+          }
+        )
+      },
+      newTask: function (formName) {
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+            const label = this.form.label
+            const content = this.form.content
+            this.$http.post(api.SAVE, {
+              id: 0,
+              label: label,
+              content: content
+            }).then(
+                res => {
+                  this.$message(res)
+                }
+            ).catch(
+              error => {
+                this.$message('提交错误' + error)
+              }
+            )
+            console.log()
+          } else {
+            console.log('error submit')
+            return false
+          }
+        })
+          /* this.$http.post(api.SAVE, task).then(
+          res => {
+            console.log(res)
+          }
+        ) */
+      },
+      addNewTask: function (task) {
+        this.newTask(task)
       }
     }
   }
