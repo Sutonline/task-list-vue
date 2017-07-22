@@ -13,7 +13,7 @@
       :data="tableData"
       border class="table" style="margin-top: 20px" :row-class-name="setRowClassName">
       <el-table-column
-        prop="date"
+        prop="createDate"
         label="CreateDate"
         width="118">
       </el-table-column>
@@ -31,8 +31,8 @@
           <el-button @click="finish(scope)" type="text" size="small">
             完成
           </el-button>
-          <el-button @click="delete(scope)" type="text" size="small">
-            删除
+          <el-button @click="updatex(scope)" type="text" size="small">
+            更新
           </el-button>
         </template>
       </el-table-column>
@@ -57,7 +57,7 @@
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="addNewTask('newTask')">确定</el-button>
+        <el-button type="primary" @click="update('newTask')">确定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -69,8 +69,10 @@
   export default {
     name: 'currentTasks',
     data () {
+      this.loadData()
       return {
         form: {
+          taskId: 0,
           label: '',
           content: ''
         },
@@ -84,23 +86,7 @@
             message: '任务内容必填'}]},
         labels: [],
         dialogVisible: false,
-        tableData: [
-          {
-            date: '2017-07-10',
-            content: '做点什么吧',
-            action: 'dododo'
-          },
-          {
-            date: '2017-07-09',
-            content: '什么都不做吗?',
-            action: 'dododo'
-          },
-          {
-            date: '2017-07-08',
-            content: '大发大打',
-            action: 'dododo'
-          }
-        ]
+        tableData: []
       }
     },
     route: {
@@ -110,11 +96,16 @@
       }
     },
     methods: {
-      delete: function (scope) {
+      updatex: function (scope) {
         console.log(scope)
+        this.form.taskId = scope.row.id
+        this.form.label = scope.row.label
+        this.form.content = scope.row.content
+        this.dialogVisible = true
       },
       finish: function (scope) {
-        console.log(scope)
+        var taskId = scope.row.id
+        this.doneTask(taskId)
       },
       loadData: function () {
         this.getAllLabel()
@@ -133,7 +124,7 @@
       getNonFinishedTask: function () {
         this.$http.get(api.GET_NON_FINISH_TASK).then(
           res => {
-            console.log(res)
+            this.tableData = res.data
           }
         )
         this.getAllLabel()
@@ -148,22 +139,28 @@
       doneTask: function (taskId) {
         this.$http.post(api.DONE + '/?id=' + taskId).then(
           res => {
-            console.log(res)
+            this.$message({
+              type: 'success',
+              message: '又完成一个任务'
+            })
           }
         )
       },
-      newTask: function (formName) {
+      updateTask: function (formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
+            const taskId = this.form.taskId
             const label = this.form.label
             const content = this.form.content
-            this.$http.post(api.SAVE, {
-              id: 0,
-              label: label,
-              content: content
-            }).then(
+            var params = new URLSearchParams()
+            params.append('taskId', taskId)
+            params.append('label', label)
+            params.append('content', content)
+            this.$http.post(api.SAVE, params).then(
                 res => {
-                  this.$message(res)
+                  this.$message(res.data)
+                  this.dialogVisible = false
+                  this.loadData()
                 }
             ).catch(
               error => {
@@ -182,8 +179,8 @@
           }
         ) */
       },
-      addNewTask: function (task) {
-        this.newTask(task)
+      update: function (task) {
+        this.updateTask(task)
       }
     }
   }

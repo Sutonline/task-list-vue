@@ -39,6 +39,8 @@
 </template>
 
 <script>
+  import * as api from '../api/task-list-api'
+
   export default {
     name: 'historyTasks',
     data () {
@@ -70,6 +72,9 @@
       },
       reset: function (formName) {
         this.$refs[formName].resetFields()
+      },
+      getHistoryTasks: function (pageIndex) {
+        this.$http.get(api.QUERY + '?')
       }
     }
   }
