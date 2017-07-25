@@ -5,18 +5,18 @@
         <el-input v-model="searchModel.content"></el-input>
       </el-form-item>
       <el-form-item label="创建时间">
-        <el-col :span="11">
+        <el-col :span="3">
           <el-date-picker type="date" placeholder="开始日期" v-model="searchModel.createDateStart"></el-date-picker>
         </el-col>
-        <el-col :span="2">
+        <el-col :span="1">
           -
         </el-col>
-        <el-col :span="11">
+        <el-col :span="3">
           <el-date-picker type="date" placeholder="结束日期" v-model="searchModel.createDateEnd"></el-date-picker>
         </el-col>
       </el-form-item>
-      <el-form-item>
-        <el-button type="" @click="search">搜索</el-button>
+      <el-form-item style="">
+        <el-button type="" @click="getHistoryTasks(1)">搜索</el-button>
         <el-button type="" @click="reset('searchForm')">重置</el-button>
       </el-form-item>
     </el-form>
@@ -32,7 +32,7 @@
       @current-change="handleCurrentChange"
       :current-page="page.currentPage"
       :page-sizes="[10, 20, 50]"
-      :page-size="10"
+      :page-size="page.pageSize"
       layout="total, sizes, prev, pager, next, jumper" :total="page.totalItemsCnt"
       style="text-align: right;margin-top: 15px"></el-pagination>
   </div>
@@ -47,6 +47,7 @@
       return {
         page: {
           currentPage: 1,
+          pageSize: 10,
           totalItemsCnt: 200
         },
         searchModel: {
@@ -65,7 +66,7 @@
         console.log(`每页${val}条`)
       },
       handleCurrentChange (val) {
-        console.log(`当前页: ${val}`)
+        this.getHistoryTasks(val)
       },
       search: function () {
         console.log('搜索')
@@ -74,7 +75,16 @@
         this.$refs[formName].resetFields()
       },
       getHistoryTasks: function (pageIndex) {
-        this.$http.get(api.QUERY + '?')
+        this.$http.get(api.LIST_BY_PAGE + '?pageIndex=' + pageIndex + '&pageSize=' + this.page.pageSize)
+          .then(function (response) {
+            this.historyTasks = response.data.list
+            this.page.totalItemsCnt = response.data.totalItems
+            this.page.currentPage = response.data.pageIndex
+            this.page.pageSize = response.data.pageSize
+          }.bind(this))
+      },
+      test: function () {
+        this.getHistoryTasks()
       }
     }
   }

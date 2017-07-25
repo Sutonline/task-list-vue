@@ -15,7 +15,7 @@
       <el-table-column
         prop="createDate"
         label="CreateDate"
-        width="118">
+        width="200">
       </el-table-column>
       <el-table-column
         prop="label"

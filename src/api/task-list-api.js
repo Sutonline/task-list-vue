@@ -13,3 +13,5 @@ export const SAVE = API_BASE_TASK_LIST + '/saveUpdate'
 export const QUERY = API_BASE_TASK_LIST + '/query'
 
 export const QUERY_LABELS = API_BASE_TASK_LIST + '/getLabels'
+
+export const LIST_BY_PAGE = API_BASE_TASK_LIST + '/listByPage'
