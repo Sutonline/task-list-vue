@@ -6,10 +6,11 @@ import Dashboard from '../components/Dashboard.vue'
 import CurrentTasks from '../pages/CurrentTasks.vue'
 import HistoryTasks from '../pages/HistoryTasks.vue'
 import Activity from '../pages/Activity.vue'
+import store from '../store/index'
 
 Vue.use(Router)
 
-export default new Router({
+const router = new Router({
   routes: [
     {
       path: '/',
@@ -45,3 +46,16 @@ export default new Router({
     }
   ]
 })
+
+router.beforeEach((to, from, next) => {
+  const userInfo = store.state.userInfo
+  const x = to.path.indexOf('login')
+  // TODO 修改
+  if ((userInfo && userInfo === 'xxxxx') || x !== -1) {
+    next()
+  } else {
+    next('/login')
+  }
+})
+
+export default router

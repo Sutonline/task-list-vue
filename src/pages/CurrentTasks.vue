@@ -143,6 +143,7 @@
               type: 'success',
               message: '又完成一个任务'
             })
+            this.loadData()
           }
         )
       },
@@ -153,7 +154,7 @@
             const label = this.form.label
             const content = this.form.content
             var params = new URLSearchParams()
-            params.append('taskId', taskId)
+            params.append('id', taskId)
             params.append('label', label)
             params.append('content', content)
             this.$http.post(api.SAVE, params).then(
@@ -167,7 +168,6 @@
                 this.$message('提交错误' + error)
               }
             )
-            console.log()
           } else {
             console.log('error submit')
             return false

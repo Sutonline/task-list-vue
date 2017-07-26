@@ -10,7 +10,7 @@
     </el-form-item>
     <el-checkbox v-model="checked" checked class="remember">记住密码</el-checkbox>
     <el-form-item style="width:100%;">
-      <el-button type="primary" style="width:100%;" @click.native.prevent="handleSubmit2" :loading="logining">登录
+      <el-button type="primary" style="width:100%;" @click.native.prevent="checkLogin" :loading="logining">登录
       </el-button>
       <!--<el-button @click.native.prevent="handleReset2">重置</el-button>-->
     </el-form-item>
@@ -20,6 +20,8 @@
 <script>
   // import NProgress from 'nprogress'
   import * as api from '../api/task-list-api'
+  import * as types from '../store/mutation-types'
+  import store from '../store/index'
 
   export default {
     data () {
@@ -44,7 +46,32 @@
     },
     methods: {
       checkLogin: function () {
-        this.$http.post(api.DONE).then({})
+        this.$refs['ruleForm2'].validate(
+          (valid) => {
+            if (valid) {
+              const name = this.ruleForm2.account
+              const password = this.ruleForm2.checkPass
+              const params = new URLSearchParams()
+              params.append('name', name)
+              params.append('password', password)
+              this.$http.post(api.LOGIN, params).then(
+                res => {
+                  const data = res.data
+                  if (data.code && data.code === '1') {
+                    this.$message.success('登录成功')
+                    // TODO 修改
+                    const userInfo = 'xxxxxx'
+                    store.commit(types.SET_USER_INFO, userInfo)
+                    this.$router.push('/dashboard')
+                  } else {
+                    this.$message.error('请输入正确的用户名和密码')
+                  }
+                }
+              )
+            } else {
+              this.$message.error('验证错误')
+            }
+          })
       }
     }
   }
