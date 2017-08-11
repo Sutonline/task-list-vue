@@ -19,3 +19,13 @@ export const QUERY_LABELS = API_BASE_TASK_LIST + '/getLabels'
 export const LIST_BY_PAGE = API_BASE_TASK_LIST + '/listByPage'
 
 export const LOGIN = API_BASE_LOGIN + '/login'
+
+export const LIST_ACTIVITIES = API_BASE_TASK_LIST + '/listActivities'
+
+export const SAVE_ACTIVITY = API_BASE_TASK_LIST + '/saveActivity'
+
+export const SAVE_NODE = API_BASE_TASK_LIST + '/saveNode'
+
+export const updateActivity = API_BASE_TASK_LIST + '/updateActivity'
+
+export const updateActivityNode = API_BASE_TASK_LIST + '/updateActivityNode'
