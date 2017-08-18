@@ -60,7 +60,7 @@
                   if (data.code && data.code === '1') {
                     this.$message.success('登录成功')
                     // TODO 修改
-                    const userInfo = 'xxxxxx'
+                    const userInfo = 'kevin'
                     store.commit(types.SET_USER_INFO, userInfo)
                     this.$router.push('/dashboard')
                   } else {

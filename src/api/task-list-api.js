@@ -1,4 +1,5 @@
-const API_BASE = 'http://www.kevin-zhang.cn:8080/task-list-web-1.0-SNAPSHOT'
+// const API_BASE = 'http://www.kevin-zhang.cn:8080/task-list-web-1.0-SNAPSHOT'
+const API_BASE = 'http://localhost:8081'
 
 const API_BASE_TASK_LIST = API_BASE + '/taskList'
 
@@ -26,6 +27,8 @@ export const SAVE_ACTIVITY = API_BASE_TASK_LIST + '/saveActivity'
 
 export const SAVE_NODE = API_BASE_TASK_LIST + '/saveNode'
 
-export const updateActivity = API_BASE_TASK_LIST + '/updateActivity'
+export const UPDATE_ACTIVITY = API_BASE_TASK_LIST + '/updateActivity'
 
-export const updateActivityNode = API_BASE_TASK_LIST + '/updateActivityNode'
+export const UPDATE_ACTIVITY_NODE = API_BASE_TASK_LIST + '/updateActivityNode'
+
+export const GET_ACTIVITY_NODES = API_BASE_TASK_LIST + '/getActivityAndNodes'
