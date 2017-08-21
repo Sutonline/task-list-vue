@@ -39,7 +39,7 @@
             <td>超期时间: {{item.currentDueTime}}</td>
           </tr>
           <tr>
-            <td><el-button size="mini" type="text">完成</el-button></td>
+            <td><el-button size="mini" type="text" @click="completeNode(item.currentNodeId)">完成</el-button></td>
           </tr>
         </table>
       </el-collapse-item>
@@ -64,15 +64,14 @@
           this.activities = response.data
         }.bind(this))
       },
-      completedNode: function (nodeId) {
-        console.log(nodeId)
-      },
-      updateActivity: function (activityId) {
-        console.log('update activity' + activityId)
-        this.$http.put(api.COMPLETE_NODE + '/' + activityId).then(function (response) {
+      completeNode: function (nodeId) {
+        this.$http.put(api.COMPLETE_NODE + '/' + nodeId).then(function (response) {
           this.$message.success(response.data)
           this.listActivities()
         })
+      },
+      updateActivity: function (activityId) {
+        console.log('update activity' + activityId)
       },
       deleteActivity: function (activityId) {
         console.log('delete activity' + activityId)
