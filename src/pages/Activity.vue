@@ -20,8 +20,11 @@
               <td width="10%">
                 剩余任务量: {{item.taskUncompletedCnt}}
               </td>
-              <td width="10%" class="ar">
-                编辑
+              <td width="5%" class="ar">
+                <el-button type="text" @click="updateActivity(item.activityId)">编辑</el-button>
+              </td>
+              <td width="5%" class="ar">
+                <el-button type="text" @click="deleteActivity(item.activityId)">删除</el-button>
               </td>
             </tr>
           </talbe>
@@ -37,7 +40,6 @@
           </tr>
           <tr>
             <td><el-button size="mini" type="text">完成</el-button></td>
-            <td><el-button size="mini" type="text">放弃进入下一任务</el-button></td>
           </tr>
         </table>
       </el-collapse-item>
@@ -64,6 +66,20 @@
       },
       completedNode: function (nodeId) {
         console.log(nodeId)
+      },
+      updateActivity: function (activityId) {
+        console.log('update activity' + activityId)
+        this.$http.put(api.COMPLETE_NODE + '/' + activityId).then(function (response) {
+          this.$message.success(response.data)
+          this.listActivities()
+        })
+      },
+      deleteActivity: function (activityId) {
+        console.log('delete activity' + activityId)
+        this.$http.delete(api.DELETE_ACTIVITY + '/' + activityId).then(function (response) {
+          this.$message.success(response.data)
+          this.listActivities()
+        })
       }
     }
   }

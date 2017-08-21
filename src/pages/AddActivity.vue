@@ -14,7 +14,7 @@
             <el-input v-model="node.content" placeholder="节点任务内容"></el-input>
           </el-col>
           <el-col span="3">
-            <el-input v-model="node.needDays" placeholder="0"></el-input>
+            <el-input-number v-model="node.needDays"></el-input-number>
           </el-col>
           <el-col span="3">
             <el-button @click="removeNode(index)">删除</el-button>
@@ -66,7 +66,7 @@
             {min: 3, max: 30, message: '最长30个字符'}
           ],
           remark: [
-            {max: 30, message: '最长30个字符'}
+            {min: 0, max: 30, message: '最长30个字符'}
           ],
           activityNodeList: [
             {validator: checkActivityNodeList}
@@ -85,12 +85,13 @@
         this.activity.activityNodeList.splice(index, 1)
       },
       saveActivity: function () {
-        // let activity = qs.stringify({'activity': this.activity})
-        // console.log('lalal' + activity)
-        this.$http.put(api.SAVE_ACTIVITY, JSON.stringify(this.activity), {
-          'Content-Type': 'application/json'
+        let params = new URLSearchParams()
+        params.append('activityJson', JSON.stringify(this.activity))
+        this.$http.post(api.SAVE_ACTIVITY, params, {
+          headers: {
+          }
         }).then(res => {
-          console.log(res)
+          this.$message.success(res.data)
         })
       },
       submit: function (formName) {

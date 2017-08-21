@@ -25,7 +25,11 @@ export const LIST_ACTIVITIES = API_BASE_TASK_LIST + '/listActivities'
 
 export const SAVE_ACTIVITY = API_BASE_TASK_LIST + '/saveActivity'
 
+export const DELETE_ACTIVITY = API_BASE_TASK_LIST + '/deleteActivity'
+
 export const SAVE_NODE = API_BASE_TASK_LIST + '/saveNode'
+
+export const COMPLETE_NODE = API_BASE_TASK_LIST + '/completeNode'
 
 export const UPDATE_ACTIVITY = API_BASE_TASK_LIST + '/updateActivity'
 
