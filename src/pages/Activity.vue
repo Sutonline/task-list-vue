@@ -72,6 +72,7 @@
       },
       updateActivity: function (activityId) {
         console.log('update activity' + activityId)
+        this.$router.push('/activityDetail?activityId=' + activityId)
       },
       deleteActivity: function (activityId) {
         console.log('delete activity' + activityId)

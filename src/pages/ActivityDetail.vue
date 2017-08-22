@@ -3,7 +3,7 @@
     <!-- 这是activity的信息 -->
     <el-card class="box-card">
       <div slot="header" class="clearfix">
-        <span style="line-height: 36px;" v-on:focus="changeInput" v-on:blur="changeText" v-on:click="toInput($event)">活动名称</span>
+        <span style="line-height: 36px;" v-on:click="toInput($event, syncActivityName)">{{activity.activityName}}</span>
       </div>
       <div>
         <el-row>
@@ -11,13 +11,15 @@
             状态:
           </el-col>
           <el-col span="3" class="item-right">
-            进行中
+            {{activity.status}}
           </el-col>
           <el-col span="3" class="item-left">
             备注:
           </el-col>
           <el-col span="3" class="item-right">
-            remarkxxxx
+            <span v-on:click="toInput($event, syncActivityRemark)">
+              {{activity.remark}}
+            </span>
           </el-col>
         </el-row>
         <el-row>
@@ -25,13 +27,13 @@
             创建时间:
           </el-col>
           <el-col span="3" class="item-right">
-            2017-08-14 16:12:13
+            {{activity.createTime}}
           </el-col>
           <el-col span="3" class="item-left">
             更新时间:
           </el-col>
           <el-col span="3" class="item-right">
-            2017-08-15 11:10:08
+            {{activity.updateTime}}
           </el-col>
         </el-row>
       </div>
@@ -41,17 +43,37 @@
     <div class="dragArea">
       <h3 style="text-align: left">任务列表</h3>
       <table class="dragTable">
-        <draggable v-mode="dragList" @start="drag=true" @end="drag=false" class="dragList" :options="dragOption">
-            <tr v-for="(element, index) in dragList" class="row" v-bind:class="{item: element.status === '未进行'}">
-              <td class="name bgblack" >{{'测试数据' + element.name}}</td>
-              <td class="age bgblack" >{{element.age}}</td>
-              <td class="sex bgblack" >{{element.sex}}</td>
+        <draggable v-model="activity.activityNodeList" @start="drag=true" @end="drag=false" class="dragList" :options="dragOption">
+            <tr v-for="(element, index) in activity.activityNodeList" class="row .ignore-elements" v-bind:class="{item: element.status === 0}">
+              <td class="name bgblack" >{{'测试数据' + element.content}}</td>
+              <td class="age bgblack" >
+                <span v-if="element.remark">
+                  {{element.remark}}
+                </span>
+                <span v-else>
+                  无
+                </span>
+              </td>
+              <td class="sex bgblack" >{{element.needDays}}</td>
               <td class="status bgblack" >{{element.status}}</td>
               <td>
-                <el-button @click="removeNode(index)" :disabled="element.status !== '未进行'">删除任务</el-button>
+                <el-button @click="removeNode(index)" :disabled="element.status !== 0">删除任务</el-button>
               </td>
             </tr>
-            <el-button slot="footer" @click="addNode">add node</el-button>
+            <tr>
+              <td>
+                <el-input v-model="newNode.content" placeholder="请输入节点内容"></el-input>
+              </td>
+              <td>
+                <el-input v-model="newNode.remark" placeholder="备注"></el-input>
+              </td>
+              <td>
+                <el-input-number v-model="newNode.needDays" ></el-input-number>
+              </td>
+              <td>
+                <el-button slot="footer" @click="addNode">add node</el-button>
+              </td>
+            </tr>
         </draggable>
       </table>
     </div>
@@ -74,53 +96,79 @@
   export default {
     name: 'activityDetail',
     data () {
+      let q = this.$route.query
+      console.log(q)
+      this.getActivityAndNodes(q.activityId)
       return {
         list: ['1', '2', '3'],
-        dragList: [
-          {name: '小一', age: 10, sex: '女', status: '已完成'},
-          {name: '小二', age: 10, sex: '女', status: '进行中'},
-          {name: '小三', age: 10, sex: '女', status: '未进行'}
-        ],
+        query: {
+          activityId: ''
+        },
         dragOption: {
           dragClass: 'row',
           draggable: '.item'
+        },
+        activity: {
+          activityName: '',
+          remark: '',
+          createTime: '',
+          updateTime: '',
+          activityNodeList: []
+        },
+        newNode: {
+          content: '',
+          remark: '',
+          needDays: 0
         }
       }
     },
     methods: {
+      loadData: function () {
+        if (this.query.activityId) {
+          this.getActivityAndNodes(this.query.activityId)
+        }
+      },
       add: function () {
         this.list.push('xxxx')
       },
       getActivityAndNodes: function (activityId) {
-        this.$http.get(api.GET_ACTIVITY_NODES + '?activityId=' + activityId).then(function (response) {
+        this.$http.get(api.GET_ACTIVITY_NODES + '/' + activityId).then(function (response) {
           console.log(response)
-        })
+          this.activity = response.data
+        }.bind(this))
       },
       saveActivity: function (activity) {
-        // TODO 保存对象
+        // TODO 保存对象 能否实现部分拖拽
         // this.$http.post(api.SAVE_ACTIVITY)
       },
-      changeInput: function () {
-        console.log('我变成input了')
-      },
-      changeText: function () {
-        console.log('我变成text了')
-      },
-      toInput: function ($event) {
-        var destElement = $event.target
-        var srcText = destElement.innerHTML
-        destElement.innerHTML = '<input value=' + srcText + ' >'
-        var input = destElement.querySelector('input')
+      toInput: function ($event, func1) {
+        let destElement = $event.target
+        let srcText = destElement.innerHTML
+        destElement.innerHTML = '<input value=' + srcText + '>'
+        let input = destElement.querySelector('input')
         input.addEventListener('blur', function (event) {
           destElement.innerHTML = input.value
+          func1(input.value)
         })
       },
+      syncActivityName: function (value) {
+        this.activity.activityName = value
+      },
+      syncActivityRemark: function (value) {
+        this.activity.remark = value
+      },
       addNode: function () {
-        var node = {name: '新增', age: 20, sex: '啦啦', status: '未进行'}
-        this.dragList.push(node)
+        if (this.newNode && this.newNode.content && this.newNode.needDays) {
+          let node = {content: this.newNode.content, remark: this.newNode.remark, needDays: this.newNode.needDays, status: 0}
+          this.activity.activityNodeList.push(node)
+          // 清空数据
+          this.newNode.content = ''
+          this.newNode.remark = ''
+          this.newNode.needDays = 0
+        }
       },
       removeNode: function (index) {
-        this.dragList.splice(index, 1)
+        this.activity.activityNodeList.splice(index, 1)
       }
     }
   }
