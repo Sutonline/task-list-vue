@@ -147,7 +147,7 @@
         }
         let params = new URLSearchParams()
         params.append('activityJson', JSON.stringify(this.activity))
-        this.$http.put(api.UPDATE_ACTIVITY, params).then(function (response) {
+        this.$http.post(api.UPDATE_ACTIVITY, params).then(function (response) {
           console.log(response)
         })
       },
@@ -169,7 +169,7 @@
       },
       addNode: function () {
         if (this.newNode && this.newNode.content && this.newNode.needDays) {
-          let node = {content: this.newNode.content, remark: this.newNode.remark, needDays: this.newNode.needDays, status: 0}
+          let node = {content: this.newNode.content, remark: this.newNode.remark, needDays: this.newNode.needDays, status: -1}
           this.activity.activityNodeList.push(node)
           // 清空数据
           this.newNode.content = ''
