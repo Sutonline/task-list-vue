@@ -45,7 +45,7 @@
       <table class="dragTable">
         <draggable v-model="activity.activityNodeList" @start="drag=true" @end="drag=false" class="dragList" :options="dragOption">
             <tr v-for="(element, index) in activity.activityNodeList" class="row .ignore-elements" v-bind:class="{item: element.status === 0}">
-              <td class="name bgblack" >{{'测试数据' + element.content}}</td>
+              <td class="name bgblack" >{{element.content}}</td>
               <td class="age bgblack" >
                 <span v-if="element.remark">
                   {{element.remark}}
@@ -79,7 +79,7 @@
     </div>
 
     <div style="align-items: left;text-align: left; margin: 2%">
-      <el-button>保存</el-button>
+      <el-button @click="updateActivity">保存</el-button>
       <el-button>取消</el-button>
     </div>
 
@@ -137,9 +137,19 @@
           this.activity = response.data
         }.bind(this))
       },
-      saveActivity: function (activity) {
+      updateActivity: function (activity) {
         // TODO 保存对象 能否实现部分拖拽
-        // this.$http.post(api.SAVE_ACTIVITY)
+        // 1. 检查 2. 序列化json 3. 使用URLSearchParam的方式进行传参
+        let valid = this.validateNodeList()
+        if (!valid) {
+          this.$message.error('节点任务信息有误')
+          return
+        }
+        let params = new URLSearchParams()
+        params.append('activityJson', JSON.stringify(this.activity))
+        this.$http.put(api.UPDATE_ACTIVITY, params).then(function (response) {
+          console.log(response)
+        })
       },
       toInput: function ($event, func1) {
         let destElement = $event.target
@@ -169,6 +179,22 @@
       },
       removeNode: function (index) {
         this.activity.activityNodeList.splice(index, 1)
+      },
+      validateNodeList: function () {
+        let nodeList = this.activity.activityNodeList
+        if (nodeList) {
+          let node
+          for (let i = 0; i < nodeList.length; i++) {
+            node = nodeList[i]
+            if (node.status) {
+              continue
+            }
+            if (!node.content || !node.needDays || node.needDays <= 0) {
+              return false
+            }
+          }
+        }
+        return true
       }
     }
   }
