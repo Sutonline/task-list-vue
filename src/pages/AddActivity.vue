@@ -28,7 +28,7 @@
       </el-form-item>
       <el-form-item>
         <el-button @click="submit('activity')">保存</el-button>
-        <el-button>取消</el-button>
+        <el-button @click="back">取消</el-button>
       </el-form-item>
     </el-form>
 
@@ -92,6 +92,7 @@
           }
         }).then(res => {
           this.$message.success(res.data)
+          this.$router.push('/activity')
         })
       },
       submit: function (formName) {
@@ -103,6 +104,9 @@
             return false
           }
         })
+      },
+      back: function () {
+        this.$router.push('/activity')
       }
     }
   }

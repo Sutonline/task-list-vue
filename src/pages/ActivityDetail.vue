@@ -80,7 +80,7 @@
 
     <div style="align-items: left;text-align: left; margin: 2%">
       <el-button @click="updateActivity">保存</el-button>
-      <el-button>取消</el-button>
+      <el-button @click="back">取消</el-button>
     </div>
 
   </div>
@@ -195,6 +195,9 @@
           }
         }
         return true
+      },
+      back: function () {
+        this.$router.push('/activity')
       }
     }
   }

@@ -1,10 +1,18 @@
 <template>
   <div>
-    <el-row>
-      <el-col :span="3">这是activity</el-col>
+    <el-row style="margin: 20px">
+      <el-col :span="2">
+        <el-button @click="listActivities">当前任务</el-button>
+      </el-col>
+      <el-col :span="2">
+        <el-button>历史任务</el-button>
+      </el-col>
+      <el-col :span="2">
+        <el-button @click="addActivity">新增</el-button>
+      </el-col>
     </el-row>
-    <el-collapse v-for="item in activities">
-      <el-collapse-item name="item" style="text-align: left">
+    <el-collapse v-for="item in activities" style="margin-left: 20px">
+      <el-collapse-item name="item" style="text-align: left;">
         <template slot="title">
           <talbe>
             <tr class="al">
@@ -44,7 +52,6 @@
         </table>
       </el-collapse-item>
     </el-collapse>
-    <el-button @click="listActivities">获取activity测试</el-button>
   </div>
 </template>
 
@@ -68,18 +75,20 @@
         this.$http.put(api.COMPLETE_NODE + '/' + nodeId).then(function (response) {
           this.$message.success(response.data)
           this.listActivities()
-        })
+        }.bind(this))
       },
       updateActivity: function (activityId) {
         console.log('update activity' + activityId)
         this.$router.push('/activityDetail?activityId=' + activityId)
       },
       deleteActivity: function (activityId) {
-        console.log('delete activity' + activityId)
         this.$http.delete(api.DELETE_ACTIVITY + '/' + activityId).then(function (response) {
           this.$message.success(response.data)
           this.listActivities()
-        })
+        }.bind(this))
+      },
+      addActivity: function () {
+        this.$router.push('/addActivity')
       }
     }
   }

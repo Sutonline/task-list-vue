@@ -8,7 +8,7 @@ import HistoryTasks from '../pages/HistoryTasks.vue'
 import Activity from '../pages/Activity.vue'
 import ActivityDetail from '../pages/ActivityDetail.vue'
 import AddActivity from '../pages/AddActivity.vue'
-// import store from '../store/index'
+import store from '../store/index'
 
 Vue.use(Router)
 
@@ -59,17 +59,14 @@ const router = new Router({
   ]
 })
 
-/*
-  router.beforeEach((to, from, next) => {
+router.beforeEach((to, from, next) => {
   const userInfo = store.state.userInfo
   const x = to.path.indexOf('login')
-  // TODO 修改
   if ((userInfo && userInfo === 'kevin') || x !== -1) {
     next()
   } else {
     next('/login')
   }
 })
-*/
 
 export default router

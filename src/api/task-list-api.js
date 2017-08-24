@@ -1,5 +1,4 @@
-// const API_BASE = 'http://www.kevin-zhang.cn:8080/task-list-web-1.0-SNAPSHOT'
-const API_BASE = 'http://localhost:8081'
+const API_BASE = 'http://www.kevin-zhang.cn:8080/task-list-web-1.0-SNAPSHOT'
 
 const API_BASE_TASK_LIST = API_BASE + '/taskList'
 
