@@ -16,22 +16,22 @@
         <template slot="title">
           <talbe>
             <tr class="al">
-              <td width="40%">
+              <td width="40%" class="mr5">
                 activityName: {{item.activityName}}
               </td>
-              <td width="20%">
+              <td width="20%" class="mr5">
                 创建时间: {{item.createTime}}
               </td>
-              <td width="20%">
+              <td width="20%" class="mr5">
                 更新时间: {{item.updateTime}}
               </td>
-              <td width="10%">
+              <td width="10%" class="mr5">
                 剩余任务量: {{item.taskUncompletedCnt}}
               </td>
-              <td width="5%" class="ar">
+              <td width="5%" class="ar mr5">
                 <el-button type="text" @click="updateActivity(item.activityId)">编辑</el-button>
               </td>
-              <td width="5%" class="ar">
+              <td width="5%" class="ar mr5">
                 <el-button type="text" @click="deleteActivity(item.activityId)">删除</el-button>
               </td>
             </tr>
@@ -61,6 +61,7 @@
   export default {
     name: 'activity',
     data () {
+      this.listActivities()
       return {
         activities: []
       }
@@ -105,5 +106,8 @@
   .ar {
     align-items: right;
     text-align: right;
+  }
+  .mr5 {
+    margin-right: 5px;
   }
 </style>
